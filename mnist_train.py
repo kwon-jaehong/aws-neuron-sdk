@@ -8,7 +8,7 @@ import torch.nn.functional as F
 USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라면 False를 리턴
 device = torch.device("cuda" if USE_CUDA else "cpu") # GPU 사용 가능하면 사용하고 아니면 CPU 사용
 print("다음 기기로 학습합니다:", device)
-training_epochs = 10
+training_epochs = 1
 batch_size = 256
 # MNIST dataset
 mnist_train = dsets.MNIST(root='MNIST_data/',
@@ -28,8 +28,8 @@ data_loader = DataLoader(dataset=mnist_train,
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
-        self.conv1 = nn.Conv2d(1, 32, 3, 1, padding='same')
-        self.conv2 = nn.Conv2d(32, 64, 3, 1, padding='same')
+        self.conv1 = nn.Conv2d(1, 32, 3, 1, 1)
+        self.conv2 = nn.Conv2d(32, 64, 3, 1, 1)
         self.dropout = nn.Dropout2d(0.25)
         # (입력 뉴런, 출력 뉴런)
         self.fc1 = nn.Linear(3136, 1000)    # 7 * 7 * 64 = 3136
@@ -47,8 +47,8 @@ class CNN(nn.Module):
         x = self.fc1(x)
         x = F.relu(x)
         x = self.fc2(x)
-        output = F.log_softmax(x, dim=1)
-        return output
+
+        return x
 
 model = CNN().to(device)
 criterion = nn.CrossEntropyLoss().to(device) # 내부적으로 소프트맥스 함수를 포함하고 있음.
@@ -64,7 +64,8 @@ for epoch in range(training_epochs): # 앞서 training_epochs의 값은 15로 �
 
         optimizer.zero_grad()
         hypothesis = model(X)
-        cost = criterion(hypothesis, Y)
+        output = F.log_softmax(hypothesis, dim=1)
+        cost = criterion(output, Y)
         cost.backward()
         optimizer.step()
 
