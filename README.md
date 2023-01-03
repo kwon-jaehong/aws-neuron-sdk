@@ -27,3 +27,14 @@ batch_size : 128, 2.20125 sec
 batch_size : 256, 2.23990 sec
 batch_size : 512, 2.23515 sec
 batch_size : 1024, 2.30371 sec
+
+GPU - Tesla T4 (g4dn.x라지)
+batch_size : 16, 2.92064 sec
+batch_size : 32, 1.07155 sec
+batch_size : 64, 0.92514 sec
+batch_size : 128, 0.86983 sec
+batch_size : 256, 0.84628 sec
+batch_size : 512, 0.81790 sec
+batch_size : 1024, 0.80388 sec
+batch_size : 2048, 0.83201 sec
+batch_size : 4096, 0.79397 sec

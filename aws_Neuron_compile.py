@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch_neuron
 
 # Create an example input for compilation
-image = torch.zeros([1, 28, 28], dtype=torch.float32)
+image = torch.zeros([1,1, 28, 28], dtype=torch.float32)
 
 # Load a pretrained ResNet50 model
 class CNN(nn.Module):
