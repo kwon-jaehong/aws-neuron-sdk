@@ -37,8 +37,8 @@ class CNN(nn.Module):
         x = self.fc1(x)
         x = F.relu(x)
         x = self.fc2(x)
-        output = F.log_softmax(x, dim=1)
-        return output
+
+        return x
 
 model = CNN()
 model.eval()
@@ -51,7 +51,8 @@ for batch_size in batch_size_list:
     correct = 0
     start = time.time()
     for data, target in test_loader:
-        output = model(data)
+        logit = model(data)
+        output = F.log_softmax(logit, dim=1)
         prediction = output.data.max(1)[1]
         correct += prediction.eq(target.data).sum()
     end = time.time()
