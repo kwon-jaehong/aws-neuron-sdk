@@ -38,3 +38,15 @@ batch_size : 512, 0.81790 sec
 batch_size : 1024, 0.80388 sec
 batch_size : 2048, 0.83201 sec
 batch_size : 4096, 0.79397 sec
+
+inf1.xlarge
+batch_size : 16, 2.72652 sec
+batch_size : 32, 2.35686 sec
+batch_size : 64, 2.19344 sec
+batch_size : 128, 2.04165 sec
+batch_size : 256, 2.00741 sec
+batch_size : 512, 2.08360 sec
+batch_size : 1024, 2.69540 sec
+batch_size : 2048, 3.03630 sec
+batch_size : 4096, 3.14335 sec
+

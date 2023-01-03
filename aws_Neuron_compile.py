@@ -10,8 +10,8 @@ image = torch.zeros([1,1, 28, 28], dtype=torch.float32)
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
-        self.conv1 = nn.Conv2d(1, 32, 3, 1, padding='same')
-        self.conv2 = nn.Conv2d(32, 64, 3, 1, padding='same')
+        self.conv1 = nn.Conv2d(1, 32, 3, 1, 1)
+        self.conv2 = nn.Conv2d(32, 64, 3, 1, 1)
         self.dropout = nn.Dropout2d(0.25)
         # (입력 뉴런, 출력 뉴런)
         self.fc1 = nn.Linear(3136, 1000)    # 7 * 7 * 64 = 3136
@@ -29,8 +29,7 @@ class CNN(nn.Module):
         x = self.fc1(x)
         x = F.relu(x)
         x = self.fc2(x)
-        output = F.log_softmax(x, dim=1)
-        return output
+        return x
 
 
 model = CNN()

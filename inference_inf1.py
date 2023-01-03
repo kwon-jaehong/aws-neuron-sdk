@@ -6,6 +6,8 @@ import torch.nn as nn
 import time
 import torch.nn.functional as F
 import torch_neuron
+import torch_xla.core.xla_model as xm
+device = xm.xla_device()
 
 USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라면 False를 리턴
 
@@ -41,6 +43,7 @@ class CNN(nn.Module):
         return x
 
 model = CNN()
+model.to(device=device)
 model.eval()
 model_neuron = torch.jit.load('inf1_mnist.pt')
 
@@ -51,6 +54,7 @@ for batch_size in batch_size_list:
     correct = 0
     start = time.time()
     for data, target in test_loader:
+        data = data.to(device=device)
         logit = model(data)
         output = F.log_softmax(logit, dim=1)
         prediction = output.data.max(1)[1]
