@@ -121,53 +121,20 @@ def benchmark(model, image):
         delta_start = time()
         results = model(image)
         delta = time() - delta_start
+        print("1장 처리시간",delta)
         latency.append(delta)
         throughput.append(image.size(0)/delta)
-    
-    # Calculate and print the model throughput and latency
-    print("Avg. Throughput: {:.0f}, Max Throughput: {:.0f}".format(np.mean(throughput), np.max(throughput)))
-    print("Latency P50: {:.0f}".format(np.percentile(latency, 50)*1000.0))
-    print("Latency P90: {:.0f}".format(np.percentile(latency, 90)*1000.0))
-    print("Latency P95: {:.0f}".format(np.percentile(latency, 95)*1000.0))
-    print("Latency P99: {:.0f}\n".format(np.percentile(latency, 99)*1000.0))
-    
-    
-    # Create a torch.neuron.DataParallel module using the compiled Neuron model
-# By default, torch.neuron.DataParallel will use four cores on an inf1.xlarge
-# or inf1.2xlarge, 16 cores on an inf1.6xlarge, and 24 cores on an inf1.24xlarge
+
+
 model_neuron_parallel = torch.neuron.DataParallel(model_neuron)
 
 # Get sample image with batch size=1 per NeuronCore
 batch_size = 1
 
 # For an inf1.xlarge or inf1.2xlarge, set num_neuron_cores = 4
-num_neuron_cores = 16
+num_neuron_cores = 4
 
 image = preprocess(batch_size=batch_size, num_neuron_cores=num_neuron_cores)
 
 # Benchmark the model
 benchmark(model_neuron_parallel, image)
-
-# Create an input with batch size 5 for compilation
-batch_size = 5
-image = torch.zeros([batch_size, 3, 224, 224], dtype=torch.float32)
-
-# Recompile the ResNet50 model for inference with batch size 5
-model_neuron = torch.neuron.trace(model, example_inputs=[image])
-
-# Export to saved model
-model_neuron.save("resnet50_neuron_b{}.pt".format(batch_size))
-batch_size = 5
-
-# Load compiled Neuron model
-model_neuron = torch.jit.load("resnet50_neuron_b{}.pt".format(batch_size))
-
-# Create DataParallel model
-model_neuron_parallel = torch.neuron.DataParallel(model_neuron)
-
-# Get sample image with batch size=5
-image = preprocess(batch_size=batch_size, num_neuron_cores=num_neuron_cores)
-
-# Benchmark the model
-benchmark(model_neuron_parallel, image)
-
