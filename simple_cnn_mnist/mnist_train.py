@@ -4,6 +4,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import torch.nn as nn
 import torch.nn.functional as F
+from torchsummary import summary as summary_
 
 USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라면 False를 리턴
 device = torch.device("cuda" if USE_CUDA else "cpu") # GPU 사용 가능하면 사용하고 아니면 CPU 사용
@@ -25,6 +26,8 @@ data_loader = DataLoader(dataset=mnist_train,
                                           batch_size=batch_size, # 배치 크기는 100
                                           shuffle=True,
                                           drop_last=True)
+
+
 class CNN(nn.Module):
     def __init__(self):
         super(CNN, self).__init__()
@@ -53,7 +56,7 @@ class CNN(nn.Module):
 model = CNN().to(device)
 criterion = nn.CrossEntropyLoss().to(device) # 내부적으로 소프트맥스 함수를 포함하고 있음.
 optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
-
+summary_(model,(1,28,28),batch_size=10)
 for epoch in range(training_epochs): # 앞서 training_epochs의 값은 15로 지정함.
     avg_cost = 0
     total_batch = len(data_loader)

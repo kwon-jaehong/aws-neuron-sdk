@@ -5,10 +5,9 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 import time
 import torch.nn.functional as F
+import torch_neuron
 
-USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라면 False를 리턴
-device = torch.device("cuda" if USE_CUDA else "cpu") # GPU 사용 가능하면 사용하고 아니면 CPU 사용
-print("현재 장비는 :",device)
+
 batch_size_list = [16,32,64,128,256,512,1024,2048,4096]
 mnist_test = dsets.MNIST(root='MNIST_data/',
                         train=False,
@@ -40,16 +39,17 @@ class CNN(nn.Module):
 
         return x
 
+model = CNN()
+model.eval()
+model_neuron = torch.jit.load('inf1_mnist.pt')
+
 
 for batch_size in batch_size_list:
     test_loader = DataLoader(dataset=mnist_test,batch_size = batch_size, shuffle = True)
-    model = CNN().to(device)
-    model.eval()    # 평가시에는 dropout이 OFF 된다.
+
     correct = 0
     start = time.time()
     for data, target in test_loader:
-        data = data.to(device)
-        target = target.to(device)
         logit = model(data)
         output = F.log_softmax(logit, dim=1)
         prediction = output.data.max(1)[1]
