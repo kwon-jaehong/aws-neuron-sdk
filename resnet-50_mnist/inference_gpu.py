@@ -8,7 +8,6 @@ USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라
 device = torch.device("cuda" if USE_CUDA else "cpu") # GPU 사용 가능하면 사용하고 아니면 CPU 사용
 print("device :", device)
 
-
 # Load a pretrained ResNet50 model
 model = models.resnet50(pretrained=True)
 model.to(device=device)
@@ -34,8 +33,8 @@ def benchmark(model, image):
         print("1장 처리시간",delta)
         latency.append(delta)
         throughput.append(image.size(0)/delta)
+
 image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
-# image = preprocess(batch_size=batch_size, num_neuron_cores=4)
 
 # Benchmark the model
 benchmark(model, image)
