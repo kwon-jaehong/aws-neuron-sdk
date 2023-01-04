@@ -23,36 +23,8 @@ Inferentia 하드웨어를 이용해 모델을 추론하기 위해서는 그래�
 # simple cnn 기준
 
 cpu 
-batch_size : 16, 2.82895 sec
-batch_size : 32, 2.26020 sec
-batch_size : 64, 2.19599 sec
-batch_size : 128, 2.20125 sec
-batch_size : 256, 2.23990 sec
-batch_size : 512, 2.23515 sec
-batch_size : 1024, 2.30371 sec
-
-GPU - Tesla T4 (g4dn.x라지)
-batch_size : 16, 2.92064 sec
-batch_size : 32, 1.07155 sec
-batch_size : 64, 0.92514 sec
-batch_size : 128, 0.86983 sec
-batch_size : 256, 0.84628 sec
-batch_size : 512, 0.81790 sec
-batch_size : 1024, 0.80388 sec
-batch_size : 2048, 0.83201 sec
-batch_size : 4096, 0.79397 sec
-
-inf1.xlarge
-batch_size : 16, 2.72652 sec
-batch_size : 32, 2.35686 sec
-batch_size : 64, 2.19344 sec
-batch_size : 128, 2.04165 sec
-batch_size : 256, 2.00741 sec
-batch_size : 512, 2.08360 sec
-batch_size : 1024, 2.69540 sec
-batch_size : 2048, 3.03630 sec
-batch_size : 4096, 3.14335 sec
-
+0.00140869140625   
+709.8786828422877
 
 -------------------------------------------------------------------
 
@@ -67,6 +39,10 @@ AWS inf1.xlarge (latency/throughput)
 0.0033380889892578123  
 299.57260073594955 
 
+
+GPU g4dn.xlarge (latency/throughput)
+0.02678161859512329     
+37.339042688857184
 
 
 

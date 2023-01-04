@@ -1,6 +1,6 @@
 add-apt-repository ppa:graphics-drivers/ppa
 apt update
-apt-get install nvidia-driver-418
+apt-get install nvidia-driver-418 -y
 apt-get install -y python3.7 python3.7-dev wget curl python3.7-distutils git apt-transport-https
 alias python=python3.7 
 apt install -y protobuf-compiler 
