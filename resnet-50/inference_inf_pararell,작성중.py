@@ -107,12 +107,7 @@ for _ in range(num_infers):
     delta = time() - delta_start
     latency.append(delta)
 
-
-total_latency = np.sum(latency)
-
-    
-## 처리 속도 평균
-mean_latency = np.mean(latency)
+total_latency = np.sum(latency)   
 ## 1초 / 처리 속도 = 초당 처리 할수있는 이미지 수
 throughput = 1 / mean_latency
 print(f"배치가 4일때 컴파일 모델 \t{total_latency/100}\t{1/(total_latency/100)} 처리")
