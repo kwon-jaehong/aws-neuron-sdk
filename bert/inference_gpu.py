@@ -20,8 +20,7 @@ sequence_2 = "HuggingFace's headquarters are situated in Manhattan"
 max_length=128
 paraphrase = tokenizer.encode_plus(sequence_0, sequence_2, max_length=max_length, padding='max_length', truncation=True, return_tensors="pt")
 
-pytorch_total_params = sum(p.numel() for p in model.parameters())
-print(f"모델 파라미터 갯수 {pytorch_total_params}")
+print(f"모델 파라미터 갯수 {sum(p.numel() for p in model.parameters())}")
 
 
 input_ids = paraphrase['input_ids']

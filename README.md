@@ -22,16 +22,33 @@ Inferentia 하드웨어를 이용해 모델을 추론하기 위해서는 그래�
 
 # simple cnn 기준
 
-cpu 
-0.00140869140625   
-709.8786828422877
+모델 파라미터 3165826
+3백만
+
+cpu g4dn cpu기준
+0.0007479619979858398  
+1336.9663200708917
+
+AWS inf1.xlarge (latency/throughput)
+0.00028248310089111327 
+3540.034773214497 1초/처리
+
+GPU 
+0.014086396694183349    
+70.99047554247332
+
+-> gpu기반은 배치성 처리에 어울리지, 1장 처리는 최소값이 있는듯 하다
 
 -------------------------------------------------------------------
 
 # 레즈넷 50
-CPU (latency/throughput)
-0.046239545345306395
-21.626510220466653 
+
+모델 파라미터 25557032
+2천5백만개
+
+CPU g4dn cpu 기준 (latency/throughput)
+0.06929637432098389     
+14.43076942767533
 
 
 AWS inf1.xlarge (latency/throughput)
@@ -45,9 +62,13 @@ AWS inf1.xlarge 4배치 모델 컴파일 사용 (torch.neuron.DataParallel)
 -> 해당인스턴스의 (inf1.x라지, 2x라지 등) 모델 처리속도를 최적화 하기 위해서는, 실험적으로 찾는수 밖에 없는듯 하다
 
 
+AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
+0.003333377838134766    299.99599462134864
+
+
 GPU g4dn.xlarge (latency/throughput)
-0.02678161859512329     
-37.339042688857184
+0.02209744930267334   
+45.25409183217452 처리
 
 
 -> AWS 뉴런 코어가 GPU 대비 8.666배 정도 빠름
@@ -55,19 +76,64 @@ GPU g4dn.xlarge (latency/throughput)
 -------------------------------------------------------------------------------
 
 버트
+파라미터 갯수 108311810
+약 1억개
 
-CPU 
+
+CPU g4dn cpu 기준
 1시퀀스 
-0.14178406715393066     
-7.052978660249112
+0.13735679149627686     
+7.280309834749639
 
 
+AWS inf1.xlarge (latency/throughput)
+0.02777846097946167     
+35.999114592394506 처리
 
 
+AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
+0.06933747053146362     14.422216333176227
 
+GPU
+1시퀀스 0.01782888889312744 
+56.08874484519746 처리
 -------------------
 
 
+torch.neuron.DataParallel은 큰 기능은 두가지로 나뉜다
+1. 모든 뉴럴코어 사용
+2. 동적 배치처리
+
+
+기본적으로 뉴런 컴파일 모델은 배치는 1로 설정한다
+
+예시 소스는 다음과 같다
+https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/torch-neuron/api-torch-neuron-dataparallel-api.html
+
+'''
+import torch
+import torch_neuron
+from torchvision import models
+
+# Load the model and set it to evaluation mode
+model = models.resnet50(pretrained=True)
+model.eval()
+
+# Compile with an example input
+image = torch.rand([1, 3, 224, 224])
+model_neuron = torch.neuron.trace(model, image)
+
+# Create the DataParallel module
+model_parallel = torch.neuron.DataParallel(model_neuron)
+
+# Create batched inputs and run inference on the same model
+batch_sizes = [2, 3, 4, 5, 6]
+for batch_size in batch_sizes:
+    image_batched = torch.rand([batch_size, 3, 224, 224])
+
+    # Run inference with a batched input
+    output = model_parallel(image_batched)
+'''
 
 
 

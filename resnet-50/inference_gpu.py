@@ -14,8 +14,8 @@ model.to(device=device)
 model.eval()
 
 
-# summary_(model,(3, 224, 224),batch_size=10)
-## 모델 정보 출력
+print(f"모델 파라미터 갯수 {sum(p.numel() for p in model.parameters())}")
+
 
 
 image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
