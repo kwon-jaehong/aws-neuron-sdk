@@ -1,6 +1,5 @@
 import torch
 from torchvision import models
-from torch.utils.data import DataLoader,dataset
 from torchsummary import summary as summary_
 from time import time
 import numpy as np

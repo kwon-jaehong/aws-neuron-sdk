@@ -30,52 +30,6 @@ import numpy as np
 # 배치 크기가 증가함에 따라 대기 시간이 지속적으로 증가합니다. 입력 크기가 너무 커서 효율적이지 않은 특정 지점까지 처리량도 증가합니다.
 
 
-## 배치가 1일때 실험 시작
-image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
-model = models.resnet50(pretrained=True)
-model.eval()
-## aws neuron sdk에서 컨버팅 지원되는지 확인하는 구문
-torch.neuron.analyze_model(model, example_inputs=[image])
-
-model_neuron = torch.neuron.trace(model, example_inputs=[image])
-model_neuron.save("resnet50_neuron.pt")
-## AWS neuron 뉴런 모델 세이브
-
-image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
-# Load the compiled Neuron model
-model_neuron = torch.jit.load('resnet50_neuron.pt')
-
-latency = []
-throughput = []
-## 총 100장을 추론하려고 함
-num_infers = 100
-for _ in range(num_infers):
-    delta_start = time()
-    results = model_neuron(image)
-    delta = time() - delta_start
-    latency.append(delta)
-    throughput.append(image.size(0)/delta)
-    
-## 처리 속도 평균
-mean_latency = np.mean(latency)
-## 1초 / 처리 속도 = 초당 처리 할수있는 이미지 수
-throughput = 1 / mean_latency
-print(f"배치가 1일때 컴파일 모델 \t{mean_latency}\t{throughput} 처리")
-## 배치가 1일때 실험 끝
-
-
-
-
-# Compile and Infer with different batch sizes on multiple NeuronCores
-# Dynamic batching using small batch sizes can result in sub-optimal throughput because it involves slicing tensors into chunks and iteratively sending data to the hardware. Using a larger batch size at compilation time can use the Inferentia hardware more efficiently in order to maximize throughput. You can test the tradeoff between individual request latency and total throughput by fine-tuning the input batch size.
-# In the following example, we recompile our model using a batch size of 5 and run the model using torch.neuron.DataParallel to fully saturate our Inferentia hardware for optimal performance.
-# 여러 NeuronCore에서 다양한 배치 크기로 컴파일 및 추론
-# 작은 배치 크기를 사용하는 동적 배치는 텐서를 청크로 분할하고 반복적으로 데이터를 하드웨어로 전송하기 때문에 차선의 처리량을 초래할 수 있습니다. 
-# 컴파일 시간에 더 큰 배치 크기를 사용하면 처리량을 최대화하기 위해 Inferentia 하드웨어를 더 효율적으로 사용할 수 있습니다. 
-# 입력 일괄 처리 크기를 미세 조정하여 개별 요청 대기 시간과 총 처리량 간의 균형을 테스트할 수 있습니다.
-# 다음 예에서는 배치 크기 5를 사용하여 모델을 다시 컴파일하고 최적의 성능을 위해 Inferentia 하드웨어를 완전히 포화시키기 위해 
-# torch.neuron.DataParallel을 사용하여 모델을 실행합니다.
-
 ## 배치가 4일때 실험 시작
 ## aws inf 인스턴스의 뉴런 코어갯수, inf1.xlarge 기준으로 뉴런코어 4개 지원
 neuron_core = 4
@@ -100,7 +54,7 @@ throughput = []
 
 ## 총 100장을 추론하려고 함
 ## 배치가 4니까 반복문은 25번 돔
-num_infers = 100 / neuron_core
+num_infers = int(100 / neuron_core)
 for _ in range(num_infers):
     delta_start = time()
     results = model_neuron_parallel(image)
@@ -109,7 +63,6 @@ for _ in range(num_infers):
 
 total_latency = np.sum(latency)   
 ## 1초 / 처리 속도 = 초당 처리 할수있는 이미지 수
-throughput = 1 / mean_latency
 print(f"배치가 4일때 컴파일 모델 \t{total_latency/100}\t{1/(total_latency/100)} 처리")
 
 
