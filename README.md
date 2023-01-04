@@ -63,9 +63,9 @@ CPU (latency/throughput)
 21.626510220466653 
 
 
-AWS inf1.xlarge
-1장 처리시간 0.0072400569915771484
-
+AWS inf1.xlarge (latency/throughput)
+0.0033380889892578123  
+299.57260073594955 
 
 
 
