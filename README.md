@@ -19,6 +19,21 @@ https://tech.scatterlab.co.kr/aws-inferentia/
 Inferentia 하드웨어를 이용해 모델을 추론하기 위해서는 그래프를 컴파일하는 과정이 필요합니다. 컴파일 과정에서는 모델의 추론 과정을 Tracing 하고 고정된 추론 그래프 형식으로 만들게 됩니다. 고정된 추론 그래프의 특성상 Python 로직이 복잡하게 포함되어 있는 모델 코드나 입력에 따라서 추론 Flow 가 동적으로 달라지는 모델은 Inferentia에서 추론할 수 없습니다. 또한 Batch 크기를 제외하고, 입출력 시 Tensor의 shape이 dynamic 하게 달라질 수도 없습니다. 위와 같은 제약조건에 부합하지 않는다면 Inferentia에서 추론하는 것은 적합하지 않습니다. 입출력의 크기가 달라지는 경우, 입/출력에 Padding을 통해서 항상 고정된 크기의 입력 Tensor 를 보장해 주는 것도 한 가지 방법입니다.
 -> "모델 forward에 텐서에 따라 if else문 들어간것은 컴파일이 잘 안됨"
 -----------------------------------------------------
+파이프라인 코어 최적화
+https://mkai.org/achieve-12x-higher-throughput-and-lowest-latency-for-pytorch-natural-language-processing-applications-out-of-the-box-on-aws-inferentia/
+
+neuronCore_pipeline_cores = 4*round(모델 내 가중치 수/(2E7))
+20000000
+2천만
+----------------------------------------------
+실시간 (1장)처리 레이턴시를 최소화 할것이냐,
+배치단위 최적화를 할것이냐
+
+https://pytorch.org/blog/amazon-ads-case-study/
+
+
+
+-------------------------
 
 # simple cnn 기준
 
@@ -51,19 +66,20 @@ CPU g4dn cpu 기준 (latency/throughput)
 14.43076942767533
 
 
+
 AWS inf1.xlarge (latency/throughput)
 0.0033380889892578123  
 299.57260073594955 
+데이터 페러렐
+0.004695675373077393    
+212.96191081127327 
 
-
-AWS inf1.xlarge 4배치 모델 컴파일 사용 (torch.neuron.DataParallel)
-0.004581692218780517
-218.25996864236427
--> 해당인스턴스의 (inf1.x라지, 2x라지 등) 모델 처리속도를 최적화 하기 위해서는, 실험적으로 찾는수 밖에 없는듯 하다
 
 
 AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
-0.003333377838134766    299.99599462134864
+0.003333377838134766    
+299.99599462134864
+
 
 
 GPU g4dn.xlarge (latency/throughput)
@@ -89,10 +105,16 @@ CPU g4dn cpu 기준
 AWS inf1.xlarge (latency/throughput)
 0.02777846097946167     
 35.999114592394506 처리
+데이터 페러렐 쓸시,
+0.008607971668243408    
+116.17138607567766 처리
+
 
 
 AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
 0.06933747053146362     14.422216333176227
+데이터 페러렐 쓸시,
+0.00887235403060913     112.70965930237402
 
 GPU
 1시퀀스 0.01782888889312744 

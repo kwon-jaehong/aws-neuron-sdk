@@ -1,6 +1,6 @@
 import torch
 import torch.neuron
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoConfig
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from time import time
 import os
 import numpy as np
@@ -26,7 +26,6 @@ example_inputs_paraphrase = paraphrase['input_ids'], paraphrase['attention_mask'
 
 # Run torch.neuron.trace to generate a TorchScript that is optimized by AWS Neuron
 model_neuron = torch.neuron.trace(model, example_inputs_paraphrase)
-
 
 latency = []
 # 1장씩 100번 넣음

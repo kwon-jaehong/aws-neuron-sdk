@@ -1,6 +1,5 @@
 import torch
 from torchvision import models
-from torchsummary import summary as summary_
 from time import time
 import numpy as np
 
@@ -14,7 +13,7 @@ model.to(device=device)
 model.eval()
 
 
-print(f"모델 파라미터 갯수 {sum(p.numel() for p in model.parameters())}")
+# print(f"모델 파라미터 갯수 {sum(p.numel() for p in model.parameters())}")
 
 
 

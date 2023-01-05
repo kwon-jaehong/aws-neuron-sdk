@@ -1,6 +1,6 @@
 import torch
 import torch.neuron
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoConfig
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from time import time
 import os
 import numpy as np

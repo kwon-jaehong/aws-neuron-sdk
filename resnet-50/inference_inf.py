@@ -8,18 +8,7 @@ image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
 model = models.resnet50(pretrained=True)
 model.eval()
 
-## aws neuron sdk에서 컨버팅 지원되는지 확인하는 구문
-torch.neuron.analyze_model(model, example_inputs=[image])
-
 model_neuron = torch.neuron.trace(model, example_inputs=[image])
-model_neuron.save("resnet50_neuron.pt")
-## AWS neuron 뉴런 모델 세이브
-
-
-
-image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
-# Load the compiled Neuron model
-model_neuron2 = torch.jit.load('resnet50_neuron.pt')
 
 latency = []
 throughput = []
@@ -27,7 +16,7 @@ throughput = []
 num_infers = 100
 for _ in range(num_infers):
     delta_start = time()
-    results = model_neuron2(image)
+    results = model_neuron(image)
     delta = time() - delta_start
     latency.append(delta)
     throughput.append(image.size(0)/delta)
