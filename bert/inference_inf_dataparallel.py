@@ -1,10 +1,9 @@
 import torch
-import torch.neuron
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from time import time
 import os
 import numpy as np
-
+import torch.neuron
 
 # NEURON_RT_NUM_CORES 또는 NEURON_RT_VISIBLE_CORES에 지정된 총 NeuronCore 수까지 여러 번 로드하여 Inf1 인스턴스에서 병렬로 실행할 수 있습니다.
 num_cores = 4 

@@ -71,10 +71,14 @@ CPU g4dn cpu 기준 (latency/throughput)
 AWS inf1.xlarge (latency/throughput)
 0.0033380889892578123  
 299.57260073594955 
+
 데이터 페러렐
 0.001828353
 546.940333732
 
+코드파이프라인(스샷 참조)
+0.0039307351350784305
+254.40533784020704
 
 AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
 
@@ -134,12 +138,11 @@ inf 2x 라지로 해야됨
 
 
 
-------------------------------
 
-
+-----------------------------------
 
 torch.neuron.DataParallel은 큰 기능은 두가지로 나뉜다
-1. 모든 뉴럴코어 사용
+1. 알아서, 모든 뉴럴코어 사용 (걍 코어당)
 2. 동적 배치처리
 
 
@@ -153,45 +156,17 @@ https://aws.amazon.com/ko/blogs/machine-learning/achieve-12x-higher-throughput-a
 정확히 이그림이다.
 
 
-
-https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/torch-neuron/api-torch-neuron-dataparallel-api.html
-보면 알겠지만
-
-배치 사이즈를 4로 주고
-
-
-
-
-기본적으로 뉴런 컴파일 모델은 배치는 1로 설정한다
-
 예시 소스는 다음과 같다
 https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/torch-neuron/api-torch-neuron-dataparallel-api.html
 
-'''
-import torch
-import torch_neuron
-from torchvision import models
+------------------------------
+코드 파이프라인
+덩치가 큰 모델이라면 파이프라인으로 나눠라 (모델을  여러코어에 나누어 계산)
+model_neuron = torch.neuron.trace(model, example_inputs=[image],compiler_args = ['--neuroncore-pipeline-cores', str(num_cores)])
+코어 나누는 공식은 neuronCore_pipeline_cores = 4*round(number-of-weights-in-model/(2E7))
+대충 이렇게 정의를 해놓았다
 
-# Load the model and set it to evaluation mode
-model = models.resnet50(pretrained=True)
-model.eval()
-
-# Compile with an example input
-image = torch.rand([1, 3, 224, 224])
-model_neuron = torch.neuron.trace(model, image)
-
-# Create the DataParallel module
-model_parallel = torch.neuron.DataParallel(model_neuron)
-
-# Create batched inputs and run inference on the same model
-batch_sizes = [2, 3, 4, 5, 6]
-for batch_size in batch_sizes:
-    image_batched = torch.rand([batch_size, 3, 224, 224])
-
-    # Run inference with a batched input
-    output = model_parallel(image_batched)
-'''
-
+---------------------------------------------------
 
 
 
