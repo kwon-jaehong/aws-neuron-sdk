@@ -5,12 +5,10 @@ from google_drive_downloader import GoogleDriveDownloader as gdd
 import os
 import sys
 from collections import OrderedDict
+import torch.neuron
 
 ## 참조 소스는 https://github.com/aws-neuron/aws-neuron-samples/blob/master/torch-neuron/inference/craft/Craft.ipynb
 
-USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라면 False를 리턴
-device = torch.device("cuda" if USE_CUDA else "cpu") # GPU 사용 가능하면 사용하고 아니면 CPU 사용
-print("device :", device)
 
 ## 크래프트 소스 코드 복사
 os.system("git clone https://github.com/clovaai/CRAFT-pytorch.git")
@@ -49,16 +47,19 @@ x = torch.rand(1,3,img_size,img_size)
 ## 모델 생성하고 웨이트 로드
 model = CRAFT()
 model.load_state_dict(copyStateDict(torch.load(model_file, map_location='cpu')))
-model = model.to(device=device)
-x = x.to(device=device)
 model.eval()
+
+model_neuron = torch.neuron.trace(model, example_inputs=x)
+
+## Export to saved model
+# model_neuron.save("craft_neuron.pt")
 
 
 latency = []
 num_infers = 100
 for _ in range(num_infers):
     delta_start = time()
-    y = model(x) # warmup
+    y = model_neuron(x) # warmup
     delta = time() - delta_start
     latency.append(delta)
 
