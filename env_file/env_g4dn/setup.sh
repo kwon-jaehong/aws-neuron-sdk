@@ -9,4 +9,5 @@ python3.7 get-pip.py
 ln -s /usr/bin/python3.7 /usr/bin/python
 rm -rf ./get-pip.py 
 apt install -y libsm6 libfontconfig1 libxrender1 libxtst6 libglib2.0-0 libgl1-mesa-glx gcc 
+pip install googledrivedownloader torch torchvision
 reboot now

@@ -25,4 +25,4 @@ ln -s /usr/bin/python3.7 /usr/bin/python
 
 ## aws 뉴런 sdk python 패키지 설치 ( 파이썬까지 자동으로 설치됨)
 pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
-pip install torch-neuron==1.8.1.* neuron-cc[tensorflow] "protobuf==3.20.1" torchvision numpy torchsummary
+pip install torch-neuron==1.8.1.* neuron-cc[tensorflow] "protobuf==3.20.1" torchvision numpy torchsummary googledrivedownloader
