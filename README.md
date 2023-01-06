@@ -10,14 +10,8 @@ ec2 instance vscode 접속 https://gre-eny.tistory.com/344
 AWS inf 인스턴스를 사용하기 위해서는 다음과 같은 과정을 따른다.
 1. 파이토치, 텐서플로우 모델을 AWS neuron sdk 사용하여 neuron compile을 한다.
 2. 컴파일된 모델을 쓴다.
+컴파일은 순수 CPU만 쓴다, neuron-top로 확인해봄
 
------------------
-dlami를 쓰지 않는이상
-https://docs.aws.amazon.com/dlami/latest/devguide/tutorial-inferentia-launching.html
-모니터링을 할수있는방법을 못찾겟다 (우분투 DLAMI )
-sudo apt-get install aws-neuron-tools -y
-export PATH=/opt/aws/neuron/bin:$PATH
-를 쓰면 되긴함
 
 ----------------------------------------------------------
 inf1 인스턴스를 사용하기위한 조건
@@ -78,14 +72,12 @@ AWS inf1.xlarge (latency/throughput)
 0.0033380889892578123  
 299.57260073594955 
 데이터 페러렐
-0.004695675373077393    
-212.96191081127327 
-
+0.001828353
+546.940333732
 
 
 AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
-0.003333377838134766    
-299.99599462134864
+
 
 
 
@@ -137,15 +129,37 @@ inf 2x 라지로 해야됨
 0.0949544906616211
 10.531360792230357
 
--------------
+----------------------------------
+다중 모델 실험
 
 
+
+------------------------------
 
 
 
 torch.neuron.DataParallel은 큰 기능은 두가지로 나뉜다
 1. 모든 뉴럴코어 사용
 2. 동적 배치처리
+
+
+레즈넷-50 페러렐 모델 1장씩 입력하면, 데이터 페러렐을 쓴다고, 모든 뉴럴 코어를 사용하지 않는다.... 속음
+neuron-top 찍어봄.
+혹시나 빨리처리해서 1코어만 괴롭히는가 싶어, 버트에도 실험해 보았다.
+뉴런코어 스케쥴링 기능은 없는 듯 하다.
+-> 버트모델 데이터 페러렐 + 배치사이즈 1로 하면, 1코어만 쳐먹고 분배하지 않는다.
+
+https://aws.amazon.com/ko/blogs/machine-learning/achieve-12x-higher-throughput-and-lowest-latency-for-pytorch-natural-language-processing-applications-out-of-the-box-on-aws-inferentia/
+정확히 이그림이다.
+
+
+
+https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/torch-neuron/api-torch-neuron-dataparallel-api.html
+보면 알겠지만
+
+배치 사이즈를 4로 주고
+
+
 
 
 기본적으로 뉴런 컴파일 모델은 배치는 1로 설정한다

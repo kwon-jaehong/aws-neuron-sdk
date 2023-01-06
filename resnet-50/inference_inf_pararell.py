@@ -7,13 +7,17 @@ import os
 
 
 num_cores = 4 
-os.environ['NEURON_RT_NUM_CORES'] = str(num_cores)
+# os.environ['NEURON_RT_NUM_CORES'] = str(num_cores)
 
 image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
 model = models.resnet50(pretrained=True)
 model.eval()
 
-model_neuron = torch.neuron.trace(model, example_inputs=[image])
+# model_neuron = torch.neuron.trace(model, example_inputs=[image])
+model_neuron = torch.neuron.trace(model, example_inputs=[image],compiler_args = ['--neuroncore-pipeline-cores', str(num_cores)])
+# model_neuron = torch.neuron.trace(model, example_inputs=[image],verbose="INFO",compiler_args = ['--neuroncore-pipeline-cores', str(1)])
+
+
 model_parallel = torch.neuron.DataParallel(model_neuron)
 
 

@@ -9,7 +9,8 @@ wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.
 apt-get update -y
 apt-get install linux-headers-$(uname -r) -y
 apt-get install aws-neuronx-dkms -y
-apt-get install aws-neuronx-tools -y
+apt-get install aws-neuron-tools -y
+
 export PATH=/opt/aws/neuron/bin:$PATH
 
 ## aws 뉴런 sdk 드라이버 설치 밑 환경변수 셋팅 끝
