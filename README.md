@@ -11,6 +11,14 @@ AWS inf 인스턴스를 사용하기 위해서는 다음과 같은 과정을 따
 1. 파이토치, 텐서플로우 모델을 AWS neuron sdk 사용하여 neuron compile을 한다.
 2. 컴파일된 모델을 쓴다.
 
+-----------------
+dlami를 쓰지 않는이상
+https://docs.aws.amazon.com/dlami/latest/devguide/tutorial-inferentia-launching.html
+모니터링을 할수있는방법을 못찾겟다 (우분투 DLAMI )
+sudo apt-get install aws-neuron-tools -y
+export PATH=/opt/aws/neuron/bin:$PATH
+를 쓰면 되긴함
+
 ----------------------------------------------------------
 inf1 인스턴스를 사용하기위한 조건
 https://tech.scatterlab.co.kr/aws-inferentia/
