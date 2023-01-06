@@ -136,8 +136,17 @@ inf 2x 라지로 해야됨
 ----------------------------------
 다중 모델 실험
 
+inf1 칩은 다음과 같은 아키텍쳐를 가진다
+https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/arch/neuron-hardware/inf1-arch.html?highlight=Device%20Memory
 
+Device memory 를 봐야하며
+resnet-50 컴파일한 파일, (resnet50_neuron.pt) 42.3메가가
+디바이스 메모리에 올라오면 58.7메가가 된다.
+이론상 inf1라지에(디바이스 메모리 8기가 제공) 136 개쯤 올릴 수 있다. (로드만... )
 
+226M 컴파일된 버트 모델 크기 -> 적재시 197.3메가
+
+실무에 적용하려면 실제로 로드된 메모리를 확인하며 서비스 해야 될듯 하다.
 
 -----------------------------------
 

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## aws 뉴런 sdk 드라이버 설치 밑 환경변수 셋팅
 . /etc/os-release
 tee /etc/apt/sources.list.d/neuron.list > /dev/null <<EOF
@@ -11,7 +13,7 @@ apt-get install linux-headers-$(uname -r) -y
 apt-get install aws-neuronx-dkms -y
 apt-get install aws-neuron-tools -y
 
-echo export PATH=/opt/aws/neuron/bin:$PATH
+export PATH="/opt/aws/neuron/bin:$PATH"
 
 ## aws 뉴런 sdk 드라이버 설치 밑 환경변수 셋팅 끝
 
