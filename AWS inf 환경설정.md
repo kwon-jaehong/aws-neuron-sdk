@@ -6,7 +6,7 @@ apt install git
 git clone https://github.com/kwon-jaehong/aws-neuron-sdk.git
 
 ## inf 셋팅
-sh ./aws-neuron-sdk/env_inf1/setup.sh
+source ./aws-neuron-sdk/env_inf1/setup.sh
 
 뉴런 드라이버 확인
 https://awsdocs-neuron.readthedocs-hosted.com/en/latest/neuron-runtime/nrt-troubleshoot.html

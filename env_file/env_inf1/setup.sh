@@ -13,7 +13,7 @@ apt-get install linux-headers-$(uname -r) -y
 apt-get install aws-neuronx-dkms -y
 apt-get install aws-neuron-tools -y
 
-export PATH="/opt/aws/neuron/bin:$PATH"
+export PATH=/opt/aws/neuron/bin:$PATH
 
 ## aws 뉴런 sdk 드라이버 설치 밑 환경변수 셋팅 끝
 
@@ -28,5 +28,5 @@ ln -s /usr/bin/python3.7 /usr/bin/python
 
 
 ## aws 뉴런 sdk python 패키지 설치 ( 파이썬까지 자동으로 설치됨)
-pip config set global.extra-index-url https://pip.repos.neuron.amazonaws.com
-pip install torch-neuron==1.8.1.* neuron-cc[tensorflow] "protobuf==3.20.1" torchvision numpy torchsummary googledrivedownloader
+pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com"
+pip install "torch-neuron==1.8.1.*" "neuron-cc[tensorflow]" "protobuf==3.20.1" torchvision numpy torchsummary googledrivedownloader

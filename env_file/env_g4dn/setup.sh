@@ -1,3 +1,4 @@
+#!/bin/bash
 add-apt-repository ppa:graphics-drivers/ppa
 apt update
 apt-get install nvidia-driver-418 -y
