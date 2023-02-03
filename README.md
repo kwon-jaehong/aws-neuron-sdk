@@ -181,5 +181,8 @@ model_neuron = torch.neuron.trace(model, example_inputs=[image],compiler_args = 
 
 ---------------------------------------------------
 
+자원 모니터링
+neuron-top 
 
-
+neuron-monitor | python3.7 /opt/aws/neuron/bin/neuron-monitor-prometheus.py
+curl http://localhost:8000/
