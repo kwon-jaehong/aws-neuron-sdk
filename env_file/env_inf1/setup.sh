@@ -8,6 +8,7 @@ EOF
 
 wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
 
+
 apt-get update -y
 apt-get install linux-headers-$(uname -r) -y
 apt-get install aws-neuronx-dkms -y
@@ -20,6 +21,7 @@ export PATH=/opt/aws/neuron/bin:$PATH
 
 
 ## python 3.7설치
+add-apt-repository -y ppa:deadsnakes/ppa
 apt-get install -y python3.7 python3.7-dev python3.7-distutils apt-transport-https g++
 alias python=python3.7 
 apt install -y protobuf-compiler 

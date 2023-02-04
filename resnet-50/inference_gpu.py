@@ -21,7 +21,7 @@ image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
 latency = []
 image = image.to(device=device)
 # 1장씩 100번 넣음
-num_infers = 100
+num_infers = 100000
 for _ in range(num_infers):
     delta_start = time()
     results = model(image)

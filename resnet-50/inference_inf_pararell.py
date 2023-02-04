@@ -24,7 +24,7 @@ model_parallel = torch.neuron.DataParallel(model_neuron)
 latency = []
 throughput = []
 # Run inference for 100 iterations and calculate metrics
-num_infers = 100
+num_infers = 100000
 for _ in range(num_infers):
     delta_start = time()
     results = model_parallel(image)

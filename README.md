@@ -184,5 +184,9 @@ model_neuron = torch.neuron.trace(model, example_inputs=[image],compiler_args = 
 자원 모니터링
 neuron-top 
 
+neuron-monitor | /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
 neuron-monitor | python3.7 /opt/aws/neuron/bin/neuron-monitor-prometheus.py
-curl http://localhost:8000/
+
+neuron-monitor -c ./monitor.conf |python3.7 /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
+neuron-monitor -c ./monitor.conf | /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
+curl http://localhost:9000/
