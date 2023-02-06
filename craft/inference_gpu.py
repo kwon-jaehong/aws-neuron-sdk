@@ -55,7 +55,7 @@ model.eval()
 
 
 latency = []
-num_infers = 100
+num_infers = 10000
 for _ in range(num_infers):
     delta_start = time()
     y = model(x) # warmup

@@ -56,7 +56,7 @@ model_neuron = torch.neuron.trace(model, example_inputs=x)
 
 
 latency = []
-num_infers = 1000
+num_infers = 10000
 for _ in range(num_infers):
     delta_start = time()
     y = model_neuron(x) # warmup

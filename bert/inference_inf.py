@@ -28,7 +28,7 @@ example_inputs_paraphrase = paraphrase['input_ids'], paraphrase['attention_mask'
 model_neuron = torch.neuron.trace(model, example_inputs_paraphrase)
 
 latency = []
-# 1장씩 100번 넣음
+# 1장씩 10000번 넣음
 num_infers = 10000
 for _ in range(num_infers):
     delta_start = time()

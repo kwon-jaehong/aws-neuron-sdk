@@ -33,8 +33,8 @@ attention_mask = attention_mask.to(device=device)
 
 
 latency = []
-# 1장씩 100번 넣음
-num_infers = 100
+# 1장씩 10000번 넣음
+num_infers = 10000
 for _ in range(num_infers):
     delta_start = time()
     paraphrase_classification_logits = model(input_ids,token_type_ids,attention_mask)[0]
