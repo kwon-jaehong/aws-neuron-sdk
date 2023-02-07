@@ -1,3 +1,7 @@
+#!/usr/bin/env python3
+
+""" neuron-monitor frontend which acts as a Prometheus instance
+"""
 import sys
 import json
 import argparse
@@ -29,14 +33,31 @@ def get_runtime_labels(instance_info, runtime_tag):
     label_dict['runtime_tag'] = runtime_tag
     return label_dict
 
-
-def process_neuroncore_counters(group_obj, data, labels):
+## 함수 수정
+def process_neuroncore_counters(group_obj, data, labels):   
+    ## 환경변수 파싱, 수정 부분 시작
+    in_use_neroncore = str(os.getenv('NEURON_RT_VISIBLE_CORES'))
+    use_core_list = []
+    if '-' in in_use_neroncore:
+        use_core_range = [int(x) for x in in_use_neroncore.split('-')]
+        use_core_list = [*range(use_core_range[0],use_core_range[1]+1)]
+    elif ',' in in_use_neroncore:
+        use_core_list = [int(x) for x in in_use_neroncore.split(',')]
+    else:
+        pass    
+    use_core_list_flg = [None] * len(data['neuroncores_in_use'])
+    for i in use_core_list:
+        use_core_list_flg[i]=True
+    ## 수정 부분 끝
+        
     gauge_name = 'neuroncore_utilization_ratio'
     labels['neuroncore'] = None
+    labels['using'] = None # using 변수 추가
     if gauge_name not in group_obj:
         group_obj[gauge_name] = Gauge(gauge_name, 'NeuronCore utilization ratio', labels.keys())
     for nc_idx, nc_data in data['neuroncores_in_use'].items():
         labels['neuroncore'] = int(nc_idx)
+        labels['using']= use_core_list_flg[int(nc_idx)] # 레이블 정보 추가
         group_obj[gauge_name].labels(**labels).set(nc_data['neuroncore_utilization'] / 100.0)
 
 
