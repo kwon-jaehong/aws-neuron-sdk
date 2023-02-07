@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
-
 """ neuron-monitor frontend which acts as a Prometheus instance
 """
 import sys
 import json
 import argparse
 import signal
+import os
 
 
 try:
