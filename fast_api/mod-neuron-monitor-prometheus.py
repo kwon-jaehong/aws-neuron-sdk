@@ -32,6 +32,8 @@ def get_runtime_labels(instance_info, runtime_tag):
     label_dict['runtime_tag'] = runtime_tag
     return label_dict
 
+##
+##
 ## 함수 수정
 def process_neuroncore_counters(group_obj, data, labels):   
     ## 환경변수 파싱, 수정 부분 시작
@@ -42,8 +44,10 @@ def process_neuroncore_counters(group_obj, data, labels):
         use_core_list = [*range(use_core_range[0],use_core_range[1]+1)]
     elif ',' in in_use_neroncore:
         use_core_list = [int(x) for x in in_use_neroncore.split(',')]
+    elif in_use_neroncore!=None:
+        use_core_list.append(int(in_use_neroncore))
     else:
-        pass    
+        pass
     use_core_list_flg = [None] * len(data['neuroncores_in_use'])
     for i in use_core_list:
         use_core_list_flg[i]=True

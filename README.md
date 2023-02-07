@@ -190,3 +190,16 @@ neuron-monitor | python3.7 /opt/aws/neuron/bin/neuron-monitor-prometheus.py
 neuron-monitor -c ./monitor.conf |python3.7 /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
 neuron-monitor -c ./monitor.conf | /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
 curl http://localhost:9000/
+
+
+---------------------------------------------------------------
+프로메테우스 
+
+neuroncore_utilization_ratio{availability_zone="us-east-2a", endpoint="metrix", instance="192.168.44.118:9000", instance_id="i-0a1e008463c4a8ce2", instance_type="inf1.2xlarge", job="example-app", namespace="default", neuroncore="0", pod="example-app-68487977f7-6lvw6", region="us-east-2", runtime_tag="9", service="example-app", subnet_id="subnet-00ce761b5232a750e", using="True"}
+0
+neuroncore_utilization_ratio{availability_zone="us-east-2a", endpoint="metrix", instance="192.168.44.118:9000", instance_id="i-0a1e008463c4a8ce2", instance_type="inf1.2xlarge", job="example-app", namespace="default", neuroncore="1", pod="example-app-68487977f7-6lvw6", region="us-east-2", runtime_tag="9", service="example-app", subnet_id="subnet-00ce761b5232a750e", using="True"}
+0
+neuroncore_utilization_ratio{availability_zone="us-east-2a", endpoint="metrix", instance="192.168.44.118:9000", instance_id="i-0a1e008463c4a8ce2", instance_type="inf1.2xlarge", job="example-app", namespace="default", neuroncore="2", pod="example-app-68487977f7-6lvw6", region="us-east-2", runtime_tag="9", service="example-app", subnet_id="subnet-00ce761b5232a750e", using="None"}
+0
+neuroncore_utilization_ratio{availability_zone="us-east-2a", endpoint="metrix", instance="192.168.44.118:9000", instance_id="i-0a1e008463c4a8ce2", instance_type="inf1.2xlarge", job="example-app", namespace="default", neuroncore="3", pod="example-app-68487977f7-6lvw6", region="us-east-2", runtime_tag="9", service="example-app", subnet_id="subnet-00ce761b5232a750e", using="None"}
+0
