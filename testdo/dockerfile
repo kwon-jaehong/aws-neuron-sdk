@@ -1,0 +1,38 @@
+FROM ubuntu:20.04
+
+WORKDIR /tempapp
+ADD . .
+
+
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt-get update -y
+RUN apt-get install wget curl git sudo gnupg2 software-properties-common -y 
+
+## 우분투 20.04용 
+RUN echo "deb https://apt.repos.neuron.amazonaws.com focal main" >> /etc/apt/sources.list.d/neuron.list
+RUN wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
+RUN apt-get update -y
+
+
+# ## 리눅스 헤더설치 및 aws 뉴런 설치
+# apt list aws-neuronx-dkms -a 로 버젼 확인
+# RUN apt-get install linux-headers-5.15.0-1028-aws aws-neuronx-dkms aws-neuronx-tools -y
+# RUN apt-get install linux-headers-5.4.0-1094-aws aws-neuronx-dkms aws-neuronx-tools aws-neuronx-runtime-lib -y
+RUN apt-get install linux-headers-5.4.0-1094-aws aws-neuronx-dkms aws-neuronx-tools -y
+ENV PATH=/opt/aws/neuron/bin:$PATH
+
+## 우분투 20.04 이미지는 기본적으로 python3.8만 설치되어있음 distutils 설치해줌
+RUN add-apt-repository -y ppa:deadsnakes/ppa
+RUN apt-get install -y python3.8-distutils apt-transport-https g++ protobuf-compiler 
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py 
+RUN python3 get-pip.py 
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+RUN pip install --ignore-installed PyYAML
+RUN pip install prometheus_client python-multipart fastapi uvicorn[standard] requests
+RUN nohup neuron-monitor -c ./monitor.conf |python3 ./mod-neuron-monitor-prometheus.py --port 9000 &
+
+## 마지막은 무조건 cmd로 서버 실행 시켜야함, sh로 만들었더니 자원 할당이 되지 않음
+CMD ["python3","myapp.py"]
