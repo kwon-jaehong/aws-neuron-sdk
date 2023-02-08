@@ -15,25 +15,26 @@ RUN echo "deb https://apt.repos.neuron.amazonaws.com focal main" >> /etc/apt/sou
 RUN wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | sudo apt-key add -
 RUN apt-get update -y
 
-# ## 리눅스 헤더설치 
-RUN apt-get install linux-headers-5.15.0-1028-aws aws-neuronx-dkms aws-neuronx-tools -y
-# RUN apt-get install aws-neuronx-runtime-lib -y
+
+# ## 리눅스 헤더설치 및 aws 뉴런 설치
+# RUN apt-get install linux-headers-5.15.0-1028-aws aws-neuronx-dkms aws-neuronx-tools -y
+RUN apt-get install linux-headers-5.15.0-1028-aws aws-neuronx-dkms aws-neuronx-tools aws-neuronx-runtime-lib -y
 ENV PATH=/opt/aws/neuron/bin:$PATH
 
 
 
-## python 3.7설치
+## 우분투 20.04 이미지는 기본적으로 python3.8만 설치되어있음 distutils 설치해줌
 RUN add-apt-repository -y ppa:deadsnakes/ppa
-RUN apt-get install -y python3.7 python3.7-dev python3.7-distutils apt-transport-https g++ protobuf-compiler 
+RUN apt-get install -y python3.8-distutils apt-transport-https g++ protobuf-compiler 
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py 
-RUN python3.7 get-pip.py 
-RUN ln -s /usr/bin/python3.7 /usr/bin/python
+RUN python3 get-pip.py 
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 
 ## aws 뉴런 sdk python 패키지 설치 ( 파이토치까지 자동으로 설치됨)
 RUN pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com"
 # RUN pip install "torch-neuron==1.8.1.*" "neuron-cc[tensorflow]" "protobuf==3.20.1" torchvision numpy
-RUN pip install "torch-neuron==1.8.1.*" "protobuf==3.20.1" torchvision numpy
+RUN pip install "torch-neuron==1.8.1.*" "protobuf==3.20.1" torchvision
 
 RUN pip install --ignore-installed PyYAML
 RUN pip install prometheus_client python-multipart fastapi uvicorn[standard] requests
