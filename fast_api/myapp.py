@@ -12,7 +12,11 @@ import base64
 from PIL import Image
 from torchvision import transforms
 
+
+## 사용가능 코어를 다시 지정 해줘야함 -> 오류 찾는데 하루 걸림 0번째 코어가 자동적으로 배치가 안되는 문제가 있엇음
 os.environ['NEURON_RT_VISIBLE_CORES'] = str(os.environ['NEURON_RT_VISIBLE_CORES'])
+
+
 
 transform = transforms.Compose([
     # 0~1의 범위를 가지도록 정규화

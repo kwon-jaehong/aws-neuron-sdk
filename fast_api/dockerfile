@@ -40,6 +40,6 @@ RUN pip install torch-neuron torchvision "protobuf==3.20.1"
 
 RUN pip install --ignore-installed PyYAML
 RUN pip install prometheus_client python-multipart fastapi uvicorn[standard] requests
+RUN neuron-monitor -c ./monitor.conf |python3 ./mod-neuron-monitor-prometheus.py --port 9000 &
 
-
-CMD ["/bin/sh","./start.sh"]
+CMD ["python3","myapp.py"]
