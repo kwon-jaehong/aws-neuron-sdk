@@ -42,4 +42,4 @@ RUN pip install --ignore-installed PyYAML
 RUN pip install prometheus_client python-multipart fastapi uvicorn[standard] requests
 
 
-# CMD ["/bin/sh","./start.sh"]
+CMD ["/bin/sh","./start.sh"]
