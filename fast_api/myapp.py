@@ -12,6 +12,8 @@ import base64
 from PIL import Image
 from torchvision import transforms
 
+os.environ['NEURON_RT_VISIBLE_CORES'] = str(os.environ['NEURON_RT_VISIBLE_CORES'])
+
 transform = transforms.Compose([
     # 0~1의 범위를 가지도록 정규화
     transforms.ToTensor(),
