@@ -17,8 +17,10 @@ RUN apt-get update -y
 
 
 # ## 리눅스 헤더설치 및 aws 뉴런 설치
+# apt list aws-neuronx-dkms -a 로 버젼 확인
 # RUN apt-get install linux-headers-5.15.0-1028-aws aws-neuronx-dkms aws-neuronx-tools -y
-RUN apt-get install linux-headers-5.15.0-1028-aws aws-neuronx-dkms aws-neuronx-tools aws-neuronx-runtime-lib -y
+# RUN apt-get install linux-headers-5.15.0-1028-aws aws-neuronx-dkms aws-neuronx-tools aws-neuronx-runtime-lib -y
+RUN apt-get install aws-neuronx-tools -y
 ENV PATH=/opt/aws/neuron/bin:$PATH
 
 
