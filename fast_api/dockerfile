@@ -40,7 +40,6 @@ RUN pip install torch-neuron torchvision "protobuf==3.20.1"
 
 RUN pip install --ignore-installed PyYAML
 RUN pip install prometheus_client python-multipart fastapi uvicorn[standard] requests
-RUN nohup neuron-monitor -c ./monitor.conf |python3 ./mod-neuron-monitor-prometheus.py --port 9000 &
 
 ## 마지막은 무조건 cmd로 서버 실행 시켜야함, sh로 만들었더니 자원 할당이 되지 않음
 CMD ["python3","myapp.py"]
