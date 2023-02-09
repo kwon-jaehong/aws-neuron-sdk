@@ -1,8 +1,8 @@
 import base64
 import requests
 
-# url = "http://example-app.default.svc:8000/resnet"
-url = 'http://localhost:8000/resnet'
+url = "http://example-app.default.svc:8000/resnet"
+# url = 'http://localhost:8000/resnet'
 with open("./image.png", "rb") as image_file:
     encoded_string = base64.b64encode(image_file.read())
     

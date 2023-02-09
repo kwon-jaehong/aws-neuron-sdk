@@ -64,16 +64,6 @@ def process_neuroncore_counters(group_obj, data, labels):
         group_obj[gauge_name].labels(**labels).set(nc_data['neuroncore_utilization'] / 100.0)
 
 
-def process_neuron_runtime_vcpu_usage(group_obj, data, labels):
-    gauge_name = 'neuron_runtime_vcpu_usage_ratio'
-    labels['usage_type'] = None
-    if gauge_name not in group_obj:
-        group_obj[gauge_name] = Gauge(gauge_name, 'Runtime vCPU utilization ratio', labels.keys())
-    cpu_usage_fields = ['user', 'system']
-    for field in cpu_usage_fields:
-        labels['usage_type'] = field
-        group_obj[gauge_name].labels(**labels).set(data['vcpu_usage'][field] / 100.0)
-
 
 def process_memory_used(group_obj, data, labels):
     gauge_name = 'neuron_runtime_memory_used_bytes'
