@@ -201,3 +201,7 @@ https://towardsdatascience.com/kubernetes-hpa-with-custom-metrics-from-prometheu
 뉴런 트레이스를 한 정적 그래프 모델은 가변적인 입력크기에 대응 할 수 없다.
 그래서 공식 문서에는 버켓팅이라는 기술을 사용하거나 패딩을 추천한다.
 https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/appnotes/torch-neuron/bucketing-app-note.html#bucketing-app-note
+
+--------------------
+함수도 컴파일 가능하다!!!!!
+https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/torch-neuron/api-compilation-python-api.html?highlight=trace
