@@ -72,7 +72,7 @@ def process_data(monitor_data, instance_info,flg):
         use_core_list = [*range(use_core_range[0],use_core_range[1]+1)]
     elif ',' in in_use_neroncore:
         use_core_list = [int(x) for x in in_use_neroncore.split(',')]
-    elif in_use_neroncore!=None:
+    elif in_use_neroncore!='None':
         use_core_list.append(int(in_use_neroncore))
     else:
         pass
