@@ -8,7 +8,7 @@ AWS ec2 인스턴스 패밀리 'inf(inferntia)'에 관한 설명 및 실습 튜�
 딥러닝 모델 추론을 **반드시 GPU에서 할 필요가 없다**라고 나는 생각한다. 아래 그림은 inf 인스턴스 패밀리의 하드웨어 사양 및 구조이다.
 
 <p align="center">
-  <img src="ETC/image/inf_ec2_family.png" width="40%" height="40%">
+  <img src="ETC/image/inf_ec2_family.png">
 </p>
 <p align="center"><a href="https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/arch/neuron-hardware/inf1-arch.html#aws-inf1-arch"> [ AWS inf 인스턴스 패밀리 ] </a> </p>
 
@@ -16,9 +16,9 @@ AWS ec2 인스턴스 패밀리 'inf(inferntia)'에 관한 설명 및 실습 튜�
 예를 들어 **inf1.xlarge**는 CPU 4개, RAM 8기가, 뉴런 칩(neuron chip) 1개를 인스턴스로 구성한다고 보면 된다.
 여기서 1개의 뉴런칩은 아래 그림과 같은 구성과 같다
 <p align="center">
-  <img src="ETC/image/neuron-chip.png" width="40%" height="40%">
+  <img src="ETC/image/neuron-chip.png">
 </p>
-<p align="center"><a href="https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/arch/neuron-hardware/inferentia.html#inferentia-arch"> [ AWS neuron chip. ] </a> </p>
+<p align="center"><a href="https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/arch/neuron-hardware/inferentia.html#inferentia-arch"> [ AWS neuron chip 구조 ] </a> </p>
 
 위 그림과 같이 구성되어 있고, 하나의 뉴런칩에는 뉴런코어(neuron-core) 4개가 들어 있다.
 뉴런 코어의 구성을 보면 SRAM, 텐서 엔진, 벡터 엔진, 스칼라 엔진이 있다.  
@@ -46,31 +46,34 @@ AWS ec2 인스턴스 패밀리 'inf(inferntia)'에 관한 설명 및 실습 튜�
 하지만 내가 inf 인스턴스 (AWS neuron sdk)를 이용해서 딥러닝 서비스 구성하려는 이유는 단 한가지 이다.
 - **저렴한 가격**  
 
-
-이 문서를 작성한 현재 기준 (2023.03.28) 인스턴스 가격은 다음과 같다
+<br><br><br>
+이 문서를 작성한 현재 기준 인스턴스 가격은 다음과 같다
 
 <p align="center">
-  <img src="ETC/image/%EC%84%9C%EC%9A%B8g4dn%EA%B0%80%EA%B2%A9.png" width="40%" height="40%">
-  <img src="ETC/image/%EC%84%9C%EC%9A%B8inf1%EA%B0%80%EA%B2%A9.png" width="40%" height="40%">
+  <img src="ETC/image/%EC%84%9C%EC%9A%B8g4dn%EA%B0%80%EA%B2%A9.png" width="70%" height="70%">
+  <img src="ETC/image/%EC%84%9C%EC%9A%B8inf1%EA%B0%80%EA%B2%A9.png" width="70%" height="70%">
 </p>
-<p align="center"> AWS 서울리젼 인스턴스 가격표 </p>
+<p align="center"> [ AWS 서울리젼 인스턴스 가격표, 2023.03.28 - 기준] </p>
 
 |인스턴스 타입|시간당 요금|한달 유지 요금|
 |------|---|---|
 |g4dn.xlarge|839.01원|604087.2원|
 |inf1.xlarge|364.39원|262360.8원|
-현재 환율 1달러 = 1296.77원  
+(현재)환율 1달러 = 1296.77원  
 
 한달동안 딥러닝 모델을 서비스 한다면, GPU기반으로 서비스 했을때는 최소 **60만원**, 뉴런 코어로 했을때는 최소 **26만원**이 소요된다.
 그런데 뉴런 칩에는 뉴런코어 4개가 탑재 되는데, inf.xlarge 인스턴스를 사용하면 GPU 4개를 사용하는 효과라고 나는 생각한다. 뉴런 코어 4개에 각기 다른 모델을 적재하여 서비스를 할 수 있다. 저렴해진 가격 덕분에, 구성할 수 있는 시스템에 대해 많은 선택지가 열리게 된다. 
+
+<br>
 
 물론 하나의 GPU(뉴런코어)에도 VRAM(SRAM)이 허락하는한, 여러 딥러닝 모델을 적재할 수 있다. 하나의 GPU에 A,B,C,D모델이 적제 되어 있다고 가정해보자. 물론 구성&환경에 따라 다르겠지만 이런 환경에서 나는 2가지 문제가 있다고 본다.
 
 1. 서비스(모델 또는 소스코드) 관리가 어렵다
 2. 서비스에서 특정 모델 과부하시 다른 모델에도 영향을 준다. 또한 특정 모델을 스케일링 할 수 없다 (통째로 스케일링 된다) 
 
-**1번은 그냥 통상적으로 생각하는 통합관리 어려움이라고 생각 하면 된다.**  
-**2번에 문제에 대한 예시는 다음과 같다.**  
+<br>
+1번은 그냥 통상적으로 생각하는 **통합관리 어려움**이라고 생각 하면 된다.
+2번에 문제에 대한 **예시는 아래과 같다.**  
 특정 시간 A라는 모델이 과부하가 걸렸다고 가정해보자. A모델 서비스 때문에 다른 B,C,D 모델 서비스도 불안정하게 된다(추론 속도, 에러 등). 또한 이러한 환경구성을 스케일링 하려면 번거롭게 소스코드를 분리하거나, 통째로 복사하여 장비를 추가해야된다. 나는 이러한 문제점들을 해결하기 위해 inf1 인스턴스를 활용하여 MSA(MicroService Architecture)를 구성하였다.  
 
 물론 뉴런 코어 하나가 g4dn의 T4(GPU)만큼 비록 성능을 보여주지 않지만, 클라우드로 서비스를 운영할 때 **유지비**를 생각해 본다면 합리적인 선택이 아닐까 생각한다. 나는 **클라우드를 이용하여 딥러닝 서비스 하는 회사**라면 '반드시 이 기술을 써야한다' 라고 생각한다.
