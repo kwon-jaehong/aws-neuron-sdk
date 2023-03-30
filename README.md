@@ -171,18 +171,28 @@ sudo su
 source ./env_file/env_g4dn/setup.sh
 ```
 
+참고:
+aws neuron 설치파일 공식 문서
+
 -------------------------------
-### 3.  AWS Neuron SDK
+## 3.  AWS Neuron SDK Tutorial
 
 GPU 환경에서 실험은, 각자 알아서 진행하고 지금부터는 AWS neuron SDK 관련만 진행 한다  
-먼저, AWS Neuron SDK를 사용하기 위해 필요한 파이썬 패키지를 설치한다  
 
+**(선택 사항) 왠만하면 python venv를 생성해서 패키지를 설치하는 것이 심신에 좋을것이다**
+```
+python -m venv ./env
+source ./env/bin/activate
+```
+
+먼저, AWS Neuron SDK를 사용하기 위해 필요한 파이썬 패키지를 설치한다  
 ```
 ## aws pip 레포 설정
 pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com"
-
-pip install "torch-neuron" "neuron-cc[tensorflow]" "protobuf" torchvision
+## aws neuron, 컴파일러 패키지 설치
+pip install "torch-neuron" "neuron-cc[tensorflow]" "protobuf" torchvision GoogleDriveDownloader
 ```
+
 
 
 

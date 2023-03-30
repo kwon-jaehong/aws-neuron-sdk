@@ -6,31 +6,27 @@ import numpy as np
 import os
 
 
+## 분산할 뉴런 코어 갯수
 num_cores = 4 
-# os.environ['NEURON_RT_NUM_CORES'] = str(num_cores)
+
 
 image = torch.zeros([1, 3, 224, 224], dtype=torch.float32)
 model = models.resnet50(pretrained=True)
 model.eval()
 
-# model_neuron = torch.neuron.trace(model, example_inputs=[image])
+## 뉴런코어 4개로 분산하여 컴파일하겠다
 model_neuron = torch.neuron.trace(model, example_inputs=[image],compiler_args = ['--neuroncore-pipeline-cores', str(num_cores)])
-# model_neuron = torch.neuron.trace(model, example_inputs=[image],verbose="INFO",compiler_args = ['--neuroncore-pipeline-cores', str(1)])
-
-
-model_parallel = torch.neuron.DataParallel(model_neuron)
 
 
 latency = []
-throughput = []
-# Run inference for 100 iterations and calculate metrics
-num_infers = 100000
+
+
+num_infers = 10000
 for _ in range(num_infers):
     delta_start = time()
-    results = model_parallel(image)
+    results = model_neuron(image)
     delta = time() - delta_start
     latency.append(delta)
-    throughput.append(image.size(0)/delta)
     
 ## 처리 속도 평균
 mean_latency = np.mean(latency)

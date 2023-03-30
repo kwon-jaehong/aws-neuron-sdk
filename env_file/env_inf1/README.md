@@ -16,7 +16,7 @@
 <br><br><br>  
 
 
-- 인슨턴스 유형을 클릭후 'inf'를 치고, 제일싼 inf.xlarge를 선택한다  
+- 인슨턴스 유형을 클릭후 'inf'를 치고, **inf.2xlarge**를 선택한다  
 ![Alt text](../../ETC/image/ec2%EC%83%9D%EC%84%B14.png)
 <br><br><br>  
 

@@ -67,4 +67,4 @@ mean_latency = np.mean(latency)
 
 ## 1초 / 처리 속도 = 초당 처리 할수있는 이미지 수
 throughput = 1 / mean_latency
-print(f"1장\t{mean_latency}\t{throughput} 처리")
+print(f"1장 처리 시간 : {mean_latency} \t\t 초당 {throughput}장 처리")
