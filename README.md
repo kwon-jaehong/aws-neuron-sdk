@@ -1,4 +1,4 @@
-# AWS neuron sdk tutorial
+# AWS Neuron SDK Tutorial
 
 ----------------
 ## 1. AWS Neuron SDK에 대한 간단한 개요
@@ -66,12 +66,13 @@ AWS ec2 인스턴스 패밀리 'inf(inferntia)'에 관한 설명 및 실습 튜�
 
 <br>
 
-물론 하나의 GPU(뉴런코어)에도 VRAM(SRAM)이 허락하는한, 여러 딥러닝 모델을 적재할 수 있다. 하나의 GPU에 A,B,C,D모델이 적제 되어 있다고 가정해보자. 물론 구성&환경에 따라 다르겠지만 이런 환경에서 나는 2가지 문제가 있다고 본다.
+물론 하나의 GPU(뉴런코어)에도 VRAM(SRAM)이 허락하는한, 여러 딥러닝 모델을 적재할 수 있다. 하나의 GPU에 A,B,C,D모델이 적제 되어 있다고 가정해보자. 물론 구성&환경에 따라 다르겠지만 이런 환경에서 나는 2가지 문제가 있다고 본다.  
 
 1. 서비스(모델 또는 소스코드) 관리가 어렵다
 2. 서비스에서 특정 모델 과부하시 다른 모델에도 영향을 준다. 또한 특정 모델을 스케일링 할 수 없다 (통째로 스케일링 된다) 
 
-<br>
+<br>  
+
 1번은 그냥 통상적으로 생각하는 **통합관리 어려움**이라고 생각 하면 된다.
 2번에 문제에 대한 **예시는 아래과 같다.**  
 특정 시간 A라는 모델이 과부하가 걸렸다고 가정해보자. A모델 서비스 때문에 다른 B,C,D 모델 서비스도 불안정하게 된다(추론 속도, 에러 등). 또한 이러한 환경구성을 스케일링 하려면 번거롭게 소스코드를 분리하거나, 통째로 복사하여 장비를 추가해야된다. 나는 이러한 문제점들을 해결하기 위해 inf1 인스턴스를 활용하여 MSA(MicroService Architecture)를 구성하였다.  
@@ -96,7 +97,7 @@ AWS ec2 인스턴스 패밀리 'inf(inferntia)'에 관한 설명 및 실습 튜�
 
 <br><br><br>  
 
-### 1. ssh 키 생성  
+### 1) ssh 키 생성  
 인스턴스를 생성하고 ssh 접속하기 위해서는 리전별 키를 생성 해줘야 한다. 절차는 다음과 같다
 좌측 하단의 메뉴에서 '네트워크 및 보안' > '키 페어' 메뉴를 누르고, 우측 상단의 주황색으로 표시된 **키 페어 생성**을 클릭한다  
 
@@ -109,64 +110,89 @@ AWS ec2 인스턴스 패밀리 'inf(inferntia)'에 관한 설명 및 실습 튜�
 <br><br><br>  
 
 생성을 누르면 키페어이름.pem 이라는 파일을 로컬 컴퓨터에 다운 받는다.  
-![Alt text](ETC/image/ssh%ED%82%A4%EC%83%9D%EC%84%B13.png)
-<br><br><br>  
-
 키페어 생성이 완료되고, 키가 등록된 모습은 다음과 같다
 ![Alt text](ETC/image/ssh%ED%82%A4%EC%83%9D%EC%84%B14.png)
+<br><br><br>  <br><br><br>  
 
-### 2. 인스턴스 생성  
+### 2) AWS EC2 인스턴스 생성
 
-ec2메뉴에서 '인스턴스' > 인스턴스에서 우측 상단의 주황색으로 표시된 **인스턴스 시작**을 클릭한다   
+먼저, 실험 하고 싶은 환경에 인스턴스를 생성 한다.
 
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B11.png)  
+[inf ( AWS neuron ) 인스턴스 생성하는 법](env_file/env_inf1/README.md)
+
+
+[GPU 인스턴스 생성하는 법](env_file/env_g4dn/README.md)
+<br><br><br>  
+
+ec2 인스턴스가 생성 되었다면, Public IP로 접속 할 수 있다.  (아래 그림에서는 52.14.167.251)
+
+![Alt text](ETC/image/ec2%EC%A0%95%EB%B3%B4.png)
+
 
 <br><br><br>  
 
-인스턴스 이름에 아무거나 적는다  
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B12.png)
+ssh 접속은, 생성한 키파일을 이용해서 접속하며, shell 명령어는 다음과 같다
+
+```
+ssh -i 키파일경로 접속유저@공인아이피주소
+```
+
+``` 
+ ## 예시 그림 기준
+
+ ssh -i "test.pem" ubuntu@52.14.167.251
+
+ ## 또는
+
+ ssh -i "test.pem" ubuntu@ec2-52-14-167-251.us-east-2.compute.amazonaws.com
+```
+
+![Alt text](ETC/image/ssh%EC%A0%91%EC%86%8D1.png)
+
+<br><br><br>  <br><br><br>  
+### 3)  AWS neuron sdk 및 GPU 환경 설정
+
+ec2에 ssh로 접속 하였으면, 실험하고자 하는 인스턴스 종류 따라 다음과 같이 장비 드라이버, python 등을 설치 할 수 있다. 
 <br><br><br>  
+- inf ( AWS neuron ) 환경 셋팅 
+```
+sudo su
+source ./env_file/env_inf1/setup.sh
+```
 
-인스턴스 이미지(OS)는 Ubuntu 20.04 LST를 선택한다 ( **이 문서에서는 우분투 20.04 환경으로 셋팅을 기본으로 함** )  
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B13.png)
-<br><br><br>  
+<br><br>
+- GPU 인스턴스 환경 셋팅
+```
+sudo su
+source ./env_file/env_g4dn/setup.sh
+```
 
+-------------------------------
+### 3.  AWS Neuron SDK
 
-인슨턴스 유형을 클릭후 'inf'를 치고, 제일싼 inf1.xlarge를 선택한다  
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B14.png)
-<br><br><br>  
+GPU 환경에서 실험은, 각자 알아서 진행하고 지금부터는 AWS neuron SDK 관련만 진행 한다
 
-
-키 페어는 방금 등록한 키로 선택한다  
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B15.png)
-<br><br><br>  
-
-네트워크 설정은 따로 수정 할 필요 없다. (기본값으로 보안그룹을 생성, 22번 포트에 접속할 수 있게 모든IP를 뚫어준다)  
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B16.png)
-<br><br><br>  
-
-
-스토리지는 넉넉하게 50GB정도 설정해 준다 ( 설치파일 및 딥러닝 실험하려면 공간이 부족하다 )  
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B17.png)
-<br><br><br>  
-
-설정을 다 했으면 우측 하단에 주황색으로 표시된 **인스턴스 시작**을 클릭한다  
-![Alt text](ETC/image/ec2%EC%83%9D%EC%84%B18.png)
-<br><br><br>  
+## aws 뉴런 sdk python 패키지 설치 ( 파이썬까지 자동으로 설치됨)
+pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com"
+pip install "torch-neuron==1.8.1.*" "neuron-cc[tensorflow]" "protobuf==3.20.1" torchvision numpy torchsummary googledrivedownloader
 
 
-주소보는법, ssh 접속화면
 
-
-aws rds 엔드포인트 
-database-2.crelw7ywu7sd.us-east-2.rds.amazonaws.com
-
-------------------
-### 2. 인스턴스 접속 및 AWS neuron sdk 환경 설치
-
-vscode 원격환경에서 환경 셋팅을 진행 하도록 한다.
-
+AWS 뉴런 sdk 샘플 페이지 
 이제 이 git 파일 수정해야됨
+
+https://towardsdatascience.com/a-complete-guide-to-ai-accelerators-for-deep-learning-inference-gpus-aws-inferentia-and-amazon-7a5d6804ef1c
+
+참고:
+
+---------------------------
+
+###  코드 리뷰 X 요건 자료 따로 만들자, -> 회사용 소스임
+## 애들 소스 정리,구간별 나눠야함
+
+https://www.itworld.co.kr/news/229459
+---------------------------
+
 
 
 
@@ -186,211 +212,3 @@ python as pt
 --------------------------
 
 
-
-
-
-AWS 뉴런 sdk 실험
-
-꼭 파이썬 3.7 쓸것
-----------------------------------------------------------
-각 환경 설정파일 실행법은
-source env_file/env_inf1/setup.sh
-----------------------------------------------------------
-그리고 cpu환경, g4dn.xlarge 환경, inf1 환경에서 실험 진행
-
-
-AWS inf 인스턴스를 사용하기 위해서는 다음과 같은 과정을 따른다.
-1. 파이토치, 텐서플로우 모델을 AWS neuron sdk 사용하여 neuron compile을 한다.
-2. 컴파일된 모델을 쓴다.
-컴파일은 순수 CPU만 쓴다, neuron-top로 확인해봄
--> 꼭 inf1 인스턴스에서 진행하지 않아도 된다, 걍 일반컴에서 컴파일 가능함
-
-
-----------------------------------------------------------
-inf1 인스턴스를 사용하기위한 조건
-https://tech.scatterlab.co.kr/aws-inferentia/
-
-Inferentia 하드웨어를 이용해 모델을 추론하기 위해서는 그래프를 컴파일하는 과정이 필요합니다. 컴파일 과정에서는 모델의 추론 과정을 Tracing 하고 고정된 추론 그래프 형식으로 만들게 됩니다. 고정된 추론 그래프의 특성상 Python 로직이 복잡하게 포함되어 있는 모델 코드나 입력에 따라서 추론 Flow 가 동적으로 달라지는 모델은 Inferentia에서 추론할 수 없습니다. 또한 Batch 크기를 제외하고, 입출력 시 Tensor의 shape이 dynamic 하게 달라질 수도 없습니다. 위와 같은 제약조건에 부합하지 않는다면 Inferentia에서 추론하는 것은 적합하지 않습니다. 입출력의 크기가 달라지는 경우, 입/출력에 Padding을 통해서 항상 고정된 크기의 입력 Tensor 를 보장해 주는 것도 한 가지 방법입니다.
--> "모델 forward에 텐서에 따라 if else문 들어간것은 컴파일이 잘 안됨"
------------------------------------------------------
-파이프라인 코어 최적화
-https://mkai.org/achieve-12x-higher-throughput-and-lowest-latency-for-pytorch-natural-language-processing-applications-out-of-the-box-on-aws-inferentia/
-
-neuronCore_pipeline_cores = 4*round(모델 내 가중치 수/(2E7))
-20000000
-2천만
-----------------------------------------------
-실시간 (1장)처리 레이턴시를 최소화 할것이냐,
-배치단위 최적화를 할것이냐
-
-https://pytorch.org/blog/amazon-ads-case-study/
-
-
-
--------------------------
-
-# simple cnn 기준
-
-모델 파라미터 3165826
-3백만
-
-cpu g4dn cpu기준
-0.0007479619979858398  
-1336.9663200708917
-
-AWS inf1.xlarge (latency/throughput)
-0.00028248310089111327 
-3540.034773214497 1초/처리
-
-GPU 
-0.014086396694183349    
-70.99047554247332
-
--> gpu기반은 배치성 처리에 어울리지, 1장 처리는 최소값이 있는듯 하다
-
--------------------------------------------------------------------
-
-# 레즈넷 50
-
-모델 파라미터 25557032
-2천5백만개
-
-CPU g4dn cpu 기준 (latency/throughput)
-0.06929637432098389     
-14.43076942767533
-
-
-
-AWS inf1.xlarge (latency/throughput)
-0.0033380889892578123  
-299.57260073594955 
-
-데이터 페러렐
-0.001828353
-546.940333732
-
-코드파이프라인(스샷 참조)
-0.0039307351350784305
-254.40533784020704
-
-AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
-
-
-
-
-GPU g4dn.xlarge (latency/throughput)
-0.02209744930267334   
-45.25409183217452 처리
-
-
--> AWS 뉴런 코어가 GPU 대비 8.666배 정도 빠름
-ssssxwsc
--------------------------------------------------------------------------------
-
-버트
-파라미터 갯수 108311810
-약 1억개
-
-
-CPU g4dn cpu 기준
-1시퀀스 
-0.13735679149627686     
-7.280309834749639
-
-
-AWS inf1.xlarge (latency/throughput)
-0.02777846097946167     
-35.999114592394506 처리
-데이터 페러렐 쓸시,
-0.008607971668243408    
-116.17138607567766 처리
-
-
-
-AWS inf1.6xlarge (latency/throughput) 뉴런칩 4개 / 뉴런코어 16개
-0.06933747053146362     14.422216333176227
-데이터 페러렐 쓸시,
-0.00887235403060913     112.70965930237402
-
-GPU
-1시퀀스 0.01782888889312744 
-56.08874484519746 처리
--------------------
-크래프트
-cpu
-1.2017473220825194 
-0.832121679511705 처리
-
-inf 2x 라지로 해야됨
--> 뉴런 모델 컴버팅시, x라지 4cpu로는 컴퓨터 뻑남 -> 이유는?
-0.0949544906616211
-10.531360792230357
-
-----------------------------------
-다중 모델 실험
-
-inf1 칩은 다음과 같은 아키텍쳐를 가진다
-https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/arch/neuron-hardware/inf1-arch.html?highlight=Device%20Memory
-
-Device memory 를 봐야하며
-resnet-50 컴파일한 파일, (resnet50_neuron.pt) 42.3메가가
-디바이스 메모리에 올라오면 58.7메가가 된다.
-이론상 inf1라지에(디바이스 메모리 8기가 제공) 136 개쯤 올릴 수 있다. (로드만... )
-
-226M 컴파일된 버트 모델 크기 -> 적재시 197.3메가
-
-실무에 적용하려면 실제로 로드된 메모리를 확인하며 서비스 해야 될듯 하다.
-
------------------------------------
-
-torch.neuron.DataParallel은 큰 기능은 두가지로 나뉜다
-1. 알아서, 모든 뉴럴코어 사용 (걍 코어당)
-2. 동적 배치처리
-
-
-레즈넷-50 페러렐 모델 1장씩 입력하면, 데이터 페러렐을 쓴다고, 모든 뉴럴 코어를 사용하지 않는다.... 속음
-neuron-top 찍어봄.
-혹시나 빨리처리해서 1코어만 괴롭히는가 싶어, 버트에도 실험해 보았다.
-뉴런코어 스케쥴링 기능은 없는 듯 하다.
--> 버트모델 데이터 페러렐 + 배치사이즈 1로 하면, 1코어만 쳐먹고 분배하지 않는다.
-
-https://aws.amazon.com/ko/blogs/machine-learning/achieve-12x-higher-throughput-and-lowest-latency-for-pytorch-natural-language-processing-applications-out-of-the-box-on-aws-inferentia/
-정확히 이그림이다.
-
-
-예시 소스는 다음과 같다
-https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/torch-neuron/api-torch-neuron-dataparallel-api.html
-
-------------------------------
-코드 파이프라인
-덩치가 큰 모델이라면 파이프라인으로 나눠라 (모델을  여러코어에 나누어 계산)
-model_neuron = torch.neuron.trace(model, example_inputs=[image],compiler_args = ['--neuroncore-pipeline-cores', str(num_cores)])
-코어 나누는 공식은 neuronCore_pipeline_cores = 4*round(number-of-weights-in-model/(2E7))
-대충 이렇게 정의를 해놓았다
-
----------------------------------------------------
-
-자원 모니터링
-neuron-top 
-
-neuron-monitor | /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
-neuron-monitor | python3.7 /opt/aws/neuron/bin/neuron-monitor-prometheus.py
-
-neuron-monitor -c ./monitor.conf |python3.7 /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
-neuron-monitor -c ./monitor.conf | /opt/aws/neuron/bin/neuron-monitor-prometheus.py --port 9000
-curl http://localhost:9000/
-
-
----------------------------------------------------------------
-프로메테우스 커스텀 매트릭스
-https://towardsdatascience.com/kubernetes-hpa-with-custom-metrics-from-prometheus-9ffc201991e
-
-
-------------------------
-뉴런 트레이스를 한 정적 그래프 모델은 가변적인 입력크기에 대응 할 수 없다.
-그래서 공식 문서에는 버켓팅이라는 기술을 사용하거나 패딩을 추천한다.
-https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/appnotes/torch-neuron/bucketing-app-note.html#bucketing-app-note
-
---------------------
-함수도 컴파일 가능하다!!!!!
-https://awsdocs-neuron.readthedocs-hosted.com/en/latest/frameworks/torch/torch-neuron/api-compilation-python-api.html?highlight=trace
