@@ -190,7 +190,7 @@ source ./env/bin/activate
 ## aws pip 레포 설정
 pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com"
 ## aws neuron, 컴파일러 패키지 설치
-pip install "torch-neuron" "neuron-cc[tensorflow]" "protobuf" torchvision GoogleDriveDownloader
+pip install "torch-neuron==1.12.1.2.5.8.0" "neuron-cc[tensorflow]" "protobuf==3.20.1" torchvision GoogleDriveDownloader transformers==4.21.3"
 ```
 
 

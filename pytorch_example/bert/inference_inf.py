@@ -1,5 +1,5 @@
 import torch
-import torch.neuron
+import torch_neuron
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from time import time
 import os
