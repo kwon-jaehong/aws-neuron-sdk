@@ -204,8 +204,19 @@ pip install "torch-neuron==1.12.1.2.5.8.0" "neuron-cc[tensorflow]" "protobuf==3.
 
 
 
-**"pytorch_example" 폴더 예제들을 실행 및 코드들을 정독**
+**그런 다음 "pytorch_example" 폴더 예제들의 코드 정독 및 실행**
 <br><br><br>  
+
+
+(참고) 뉴런 장비 모니터링 명령어는 다음과 같다.
+```
+export PATH=/opt/aws/neuron/bin:$PATH
+neuron-top
+```
+![Alt text](ETC/image/neuron-top.png)
+
+<br><br><br>  
+
 
 
 
@@ -251,41 +262,18 @@ pip install "torch-neuron==1.12.1.2.5.8.0" "neuron-cc[tensorflow]" "protobuf==3.
 
 
 
+## **< 중요!! > 반드시 실험이 끝나면 인스턴스를 종료 시킨다** 
 
+![Alt text](ETC/image/ec2%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4%EC%A2%85%EB%A3%8C.png)
 
+<br> <br> <br> 
 
 참고:  
 
 - [ AWS 뉴런 example github ](https://github.com/aws-neuron/aws-neuron-samples/tree/master/torch-neuron/inference)
+- [ AWS 뉴런 공식 문서 ](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/)
 
 
 
-
----------------------------
-
-
-###  코드 리뷰 X 요건 자료 따로 만들자, -> 회사용 소스임
-## 애들 소스 정리,구간별 나눠야함
-
-https://www.itworld.co.kr/news/229459
----------------------------
-
-
-
-
-```
-python as pt
-```
-
-
-
-
-
-
-
-
-
-
---------------------------
 
 
