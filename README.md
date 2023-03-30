@@ -156,6 +156,8 @@ ec2에 ssh로 접속 하였으면, 실험하고자 하는 인스턴스 종류 �
 <br><br><br>  
 - inf ( AWS neuron ) 환경 셋팅 
 ```
+git clone https://github.com/kwon-jaehong/aws-neuron-sdk.git
+cd ./aws-neuron-sdk
 sudo su
 source ./env_file/env_inf1/setup.sh
 ```
@@ -163,6 +165,8 @@ source ./env_file/env_inf1/setup.sh
 <br><br>
 - GPU 인스턴스 환경 셋팅
 ```
+git clone https://github.com/kwon-jaehong/aws-neuron-sdk.git
+cd ./aws-neuron-sdk
 sudo su
 source ./env_file/env_g4dn/setup.sh
 ```
@@ -170,20 +174,26 @@ source ./env_file/env_g4dn/setup.sh
 -------------------------------
 ### 3.  AWS Neuron SDK
 
-GPU 환경에서 실험은, 각자 알아서 진행하고 지금부터는 AWS neuron SDK 관련만 진행 한다
+GPU 환경에서 실험은, 각자 알아서 진행하고 지금부터는 AWS neuron SDK 관련만 진행 한다  
+먼저, AWS Neuron SDK를 사용하기 위해 필요한 파이썬 패키지를 설치한다  
 
-## aws 뉴런 sdk python 패키지 설치 ( 파이썬까지 자동으로 설치됨)
+```
+## aws pip 레포 설정
 pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com"
-pip install "torch-neuron==1.8.1.*" "neuron-cc[tensorflow]" "protobuf==3.20.1" torchvision numpy torchsummary googledrivedownloader
+
+pip install "torch-neuron" "neuron-cc[tensorflow]" "protobuf" torchvision
+```
 
 
 
-AWS 뉴런 sdk 샘플 페이지 
-이제 이 git 파일 수정해야됨
 
-https://towardsdatascience.com/a-complete-guide-to-ai-accelerators-for-deep-learning-inference-gpus-aws-inferentia-and-amazon-7a5d6804ef1c
 
-참고:
+참고:  
+
+- AWS 뉴런 sdk 샘플 페이지  
+
+- https://towardsdatascience.com/a-complete-guide-to-ai-accelerators-for-deep-learning-inference-gpus-aws-inferentia-and-amazon-7a5d6804ef1c
+
 
 ---------------------------
 
