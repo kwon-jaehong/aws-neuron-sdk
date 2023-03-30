@@ -177,21 +177,77 @@ aws neuron 설치파일 공식 문서
 -------------------------------
 ## 3.  AWS Neuron SDK Tutorial
 
-GPU 환경에서 실험은, 각자 알아서 진행하고 지금부터는 AWS neuron SDK 관련만 진행 한다  
+GPU 환경에서 실험은, 각자 알아서 진행하고 지금부터는 AWS neuron SDK 관련만 진행 한다   
+
+
+<br><br><br>  
 
 **(선택 사항) 왠만하면 python venv를 생성해서 패키지를 설치하는 것이 심신에 좋을것이다**
 ```
+## 가상환경 생성
 python -m venv ./env
+
+## python 가상환경 활성화
 source ./env/bin/activate
 ```
+
+<br><br><br>  
 
 먼저, AWS Neuron SDK를 사용하기 위해 필요한 파이썬 패키지를 설치한다  
 ```
 ## aws pip 레포 설정
 pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com"
 ## aws neuron, 컴파일러 패키지 설치
-pip install "torch-neuron==1.12.1.2.5.8.0" "neuron-cc[tensorflow]" "protobuf==3.20.1" torchvision GoogleDriveDownloader transformers==4.21.3"
+pip install "torch-neuron==1.12.1.2.5.8.0" "neuron-cc[tensorflow]" "protobuf==3.20.1" torchvision GoogleDriveDownloader "transformers==4.21.3"
 ```
+<br><br><br>  
+
+
+
+**"pytorch_example" 폴더 예제들을 실행 및 코드들을 정독**
+<br><br><br>  
+
+
+
+## 실험 결과 (**CPU** Vs **GPU Vs** **AWS Neuron** 처리속도)
+- **참고로 AWS neuron core 1개만 사용 하였을때 나온 결과이다.**
+<br><br>  
+
+|simple_CNN - 모델 파라메터 수 (3백만)|||
+|------|---|---|
+|**추론 장비**|**추론에 걸리는 시간(1장)**|**1초 처리량**|
+|CPU|0.00074초|1337장|
+|**AWS neuron**|0.0004초|2310장|
+|GPU|0.0006초|1658장|
+
+<br>
+
+|resnet-50 - 모델 파라메터 수 (2천5백만)|||
+|------|---|---|
+|**추론 장비**|**추론에 걸리는 시간(1장)**|**1초 처리량**|
+|CPU|0.069초|14장|
+|**AWS neuron**|0.00333초|300장|
+|GPU|0.01095초|91장|
+
+<br> 
+
+|bert - 모델 파라메터 수 (1억8백만)|||
+|------|---|---|
+|**추론 장비**|**추론에 걸리는 시간**|**1초 처리량**|
+|CPU|0.069초|14 시퀀스|
+|**AWS neuron**|0.00826초|121  시퀀스|
+|GPU|0.01494초|67  시퀀스|
+
+<br> 
+
+|craft - 모델 파라메터 수 |||
+|------|---|---|
+|**추론 장비**|**추론에 걸리는 시간(1장)**|**1초 처리량**|
+|CPU|1.1364초|0.87장|
+|**AWS neuron**|0.0848초|11장|
+|GPU|0.10480초|9.5장|
+
+<br> <br> <br> 
 
 
 
@@ -200,12 +256,13 @@ pip install "torch-neuron==1.12.1.2.5.8.0" "neuron-cc[tensorflow]" "protobuf==3.
 
 참고:  
 
-- AWS 뉴런 sdk 샘플 페이지  
+- [ AWS 뉴런 example github ](https://github.com/aws-neuron/aws-neuron-samples/tree/master/torch-neuron/inference)
 
-- https://towardsdatascience.com/a-complete-guide-to-ai-accelerators-for-deep-learning-inference-gpus-aws-inferentia-and-amazon-7a5d6804ef1c
+
 
 
 ---------------------------
+
 
 ###  코드 리뷰 X 요건 자료 따로 만들자, -> 회사용 소스임
 ## 애들 소스 정리,구간별 나눠야함

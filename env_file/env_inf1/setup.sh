@@ -22,6 +22,7 @@ export PATH=/opt/aws/neuron/bin:$PATH
 
 ## python 3.7설치
 add-apt-repository -y ppa:deadsnakes/ppa
+apt update
 apt-get install -y python3.7 python3.7-dev python3.7-venv python3.7-distutils apt-transport-https g++
 alias python=python3.7 
 apt install -y protobuf-compiler 
