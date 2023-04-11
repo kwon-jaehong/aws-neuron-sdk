@@ -1,0 +1,18 @@
+From ubuntu:20.04
+
+WORKDIR /python_app
+
+SHELL ["/bin/bash", "-c"]
+
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apt-get update -y && apt-get install wget gnupg2 -y
+
+# ## aws 뉴런 sdk 드라이버 설치 밑 환경변수 셋팅
+RUN echo "deb https://apt.repos.neuron.amazonaws.com focal main" >> /etc/apt/sources.list.d/neuron.list
+RUN wget -qO - https://apt.repos.neuron.amazonaws.com/GPG-PUB-KEY-AMAZON-AWS-NEURON.PUB | apt-key add -
+RUN apt-get update -y && apt install linux-headers-5.4.0-1094-aws aws-neuronx-dkms aws-neuronx-tools python3.8-venv libgl1-mesa-glx libglib2.0-0 libgtk2.0-dev g++ -y
+
+RUN python3.8 -m venv ./env && ./env/bin/python -m pip install -U pip && ./env/bin/pip config set global.extra-index-url "https://pip.repos.neuron.amazonaws.com" && ./env/bin/pip install "torch-neuron==1.8.*" "protobuf" torchvision
+
+
